@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de usuario</title>
+    <link rel="stylesheet" type="text/css" href="/Style/Style.css">
+
+    <script>
+        let contadorCliente = 1;
+
+        function generarCodigoCliente(nombre, apellido) {
+            if (nombre && apellido) {
+                let iniciales = nombre.charAt(0).toUpperCase() + apellido.charAt(0).toUpperCase();
+                let correlativo = contadorCliente.toString().padStart(4, '0'); // Formato 0001
+                contadorCliente++; // Aumenta el contador para la siguiente persona
+                return `${iniciales}-${correlativo}`;
+            }
+            return "XX-0000"; // Código por defecto si no hay datos
+        }
+
+        function validarContrasena() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+            var errorMsg = document.getElementById("errorMessage");
+
+            if (password !== confirmPassword) {
+                errorMsg.textContent = "Las contraseñas no son iguales";
+                return false;
+            } else {
+                errorMsg.textContent = "";
+                return true;
+            }
+        }
+        function mostrarDatos(event) {
+            event.preventDefault(); // Evita que el formulario se envíe automáticamente
+
+            if (!validarContrasena()) {
+                alert("Corrige los errores antes de continuar.");
+                return false;
+            }
+
+            // Obtener datos del formulario
+            let nombre = document.getElementById("nombre").value.trim();
+            let apellido = document.getElementById("apellido").value.trim();
+
+            // Generar y mostrar el código de cliente
+            let codigoCliente = generarCodigoCliente(nombre, apellido);
+            document.getElementById("resumenCodigoCliente").innerText = codigoCliente;
+
+            // Llenar el resumen con los datos ingresados
+            document.getElementById("resumenNombre").innerText = nombre;
+            document.getElementById("resumenApellido").innerText = apellido;
+            document.getElementById("resumenUsuario").innerText = document.getElementById("usuario").value;
+            document.getElementById("resumenCorreo").innerText = document.getElementById("correo").value;
+            document.getElementById("resumenFecha").innerText = document.getElementById("fecha").value;
+            document.getElementById("resumenEdad").innerText = document.getElementById("edad").value;
+
+            // Mostrar el modal
+            document.getElementById("modalResumen").style.display = "block";
+        }
+
+        function cerrarModal() {
+            document.getElementById("modalResumen").style.display = "none";
+        }
+
+        function enviarFormulario() {
+            window.location.href = "registroexitoso.html";
+        }
+
+    </script>
+
+    <style>
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            margin: 10% auto;
+            width: 50%;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .modal button {
+            margin: 10px;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <p class="title">Regístrate</p>
+    </center>
+
+    <form id="miFormulario" action="/registroexitoso.html" method="POST" onsubmit="mostrarDatos(event)">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required />
+        <br>
+
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" name="apellido" required />
+        <br>
+
+        <label for="usuario">Usuario:</label>
+        <input type="text" id="usuario" minlength="6" maxlength="12" name="usuario" required />
+        <br>
+
+        <label for="correo">Correo Electrónico:</label>
+        <input type="email" id="correo" name="correo" required />
+        <br>
+
+        <label for="fecha">Fecha de nacimiento:</label>
+        <input type="date" id="fecha" name="fecha" />
+        <br>
+
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad" min="18" max="70" name="edad" required />
+        <br>
+
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required oninput="validarContrasena()" />
+        <br>
+
+        <label for="confirmPassword">Confirmar Contraseña:</label>
+        <input type="password" id="confirmPassword" name="password2" required oninput="validarContrasena()" />
+        <br>
+
+        <span id="errorMessage" style="color: red;"></span>
+        <br>
+
+        <button type="submit">Registrar</button>
+        <button type="reset">Cancelar</button>
+    </form>
+
+    <!-- Ventana Modal de Confirmación -->
+    <div id="modalResumen" class="modal">
+        <div class="modal-content">
+            <h2>Confirma tus datos</h2>
+            <p><strong>Nombre:</strong> <span id="resumenNombre"></span></p>
+            <p><strong>Apellido:</strong> <span id="resumenApellido"></span></p>
+            <p><strong>Usuario:</strong> <span id="resumenUsuario"></span></p>
+            <p><strong>Código de Cliente:</strong> <span id="resumenCodigoCliente"></span></p>
+            <p><strong>Correo Electrónico:</strong> <span id="resumenCorreo"></span></p>
+            <p><strong>Fecha de Nacimiento:</strong> <span id="resumenFecha"></span></p>
+            <p><strong>Edad:</strong> <span id="resumenEdad"></span></p>
+
+            <button onclick="enviarFormulario()">Confirmar</button>
+            <button onclick="cerrarModal()">Cancelar</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
